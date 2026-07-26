@@ -1,0 +1,6 @@
+pydantic>=2.0
+anthropic
+openai
+python-dotenv
+streamlit>=1.31
+pandas

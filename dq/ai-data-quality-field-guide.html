@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI in Data Quality - Field Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<style>
+  :root{
+    --ink:#16201f;--ink-soft:#3c4a48;--paper:#f6f8f7;--panel:#eef3f2;
+    --panel-line:#d4dedc;--petrol:#0e5e5e;--petrol-deep:#0a3f3f;
+    --amber:#cf7a1c;--amber-tint:#fbf0e2;--teal-tint:#e4efee;
+    --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+    --sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;
+    --serif:'IBM Plex Serif',Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px 100px}
+  header.top{border-bottom:2px solid var(--ink);margin:0 0 8px;padding:48px 0 20px}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--petrol);font-weight:600;margin:0 0 12px}
+  h1{font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.14;margin:0 0 8px;letter-spacing:-.01em}
+  .sub{font-size:16px;color:var(--ink-soft);margin:0;max-width:58ch}
+  section{margin-top:46px}
+  .secnum{font-family:var(--mono);font-size:12.5px;color:var(--petrol);font-weight:600}
+  h2{font-family:var(--serif);font-weight:600;font-size:23px;margin:5px 0 4px;letter-spacing:-.01em;padding-bottom:9px;border-bottom:1px solid var(--panel-line)}
+  h3{font-size:16.5px;font-weight:600;margin:24px 0 6px;color:var(--petrol-deep)}
+  p{margin:13px 0}
+  strong{font-weight:600}
+  em{color:var(--ink-soft)}
+  code{font-family:var(--mono);font-size:.85em;background:var(--panel);padding:1px 6px;border-radius:4px;color:var(--petrol-deep)}
+  .lead{background:var(--amber-tint);border-left:4px solid var(--amber);padding:16px 20px;border-radius:0 6px 6px 0;margin:24px 0}
+  .lead p{margin:0;font-size:15.5px}
+  .lead .big{font-family:var(--serif);font-size:18px;color:var(--petrol-deep);font-weight:600;display:block;margin-bottom:4px}
+  .diagram{background:#fff;border:1px solid var(--panel-line);border-radius:10px;padding:20px 10px;margin:22px 0;overflow-x:auto}
+  .mmd-render{display:flex;justify-content:center;min-width:min-content}
+  .mmd-render svg{max-width:100%;height:auto}
+  .mmd-err{font-family:var(--mono);font-size:12px;color:#9a3412;background:#fbeae2;border:1px solid #e8c4b2;padding:10px 14px;border-radius:6px;white-space:pre-wrap}
+  .figcap{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);text-align:center;margin:3px 0 0}
+  .agents{display:grid;grid-template-columns:1fr;gap:0;margin:18px 0;border:1px solid var(--panel-line);border-radius:10px;overflow:hidden}
+  .agent{display:grid;grid-template-columns:150px 1fr;gap:0;border-bottom:1px solid var(--panel-line)}
+  .agent:last-child{border-bottom:none}
+  .agent .nm{background:var(--teal-tint);padding:12px 14px;font-weight:600;font-size:14.5px;color:var(--petrol-deep);border-right:1px solid var(--panel-line);display:flex;align-items:center}
+  .agent .ds{padding:12px 16px;font-size:14.5px}
+  .agent .ds b{color:var(--petrol-deep)}
+  .pill{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;background:var(--panel);color:var(--petrol);padding:2px 7px;border-radius:20px;margin-left:6px;vertical-align:1px}
+  .depcard{background:#fff;border:1px solid var(--panel-line);border-left:4px solid var(--petrol);border-radius:0 8px 8px 0;padding:14px 18px;margin:14px 0}
+  .depcard .dh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .depcard .dn{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--petrol-deep)}
+  .depcard .dt{font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:500}
+  .depcard .df{margin:6px 0;font-size:14.5px}
+  .depcard .dm{margin:6px 0 0;font-size:14px;color:var(--ink-soft);padding-top:8px;border-top:1px dashed var(--panel-line)}
+  .depcard .dm code{background:var(--teal-tint)}
+  .keypts{list-style:none;padding:0;margin:16px 0}
+  .keypts li{position:relative;padding:9px 0 9px 30px;border-bottom:1px dashed var(--panel-line);font-size:15px}
+  .keypts li:last-child{border-bottom:none}
+  .keypts li::before{content:"\2192";position:absolute;left:4px;top:9px;color:var(--amber);font-weight:700}
+  .talk{background:var(--petrol-deep);color:#eaf3f1;border-radius:10px;padding:22px 24px;margin-top:22px}
+  .talk .lbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7fd1c4;font-weight:600;display:block;margin-bottom:12px}
+  .talk ul{list-style:none;padding:0;margin:0}
+  .talk li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12);font-size:15px;line-height:1.5}
+  .talk li:last-child{border-bottom:none}
+  .talk b{color:#fff}
+  .terms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+  .term{background:#fff;border:1px solid var(--panel-line);border-radius:8px;padding:12px 14px}
+  .term .t{font-family:var(--mono);font-size:13px;color:var(--petrol);font-weight:600;margin-bottom:3px}
+  .term .d{font-size:13.5px;color:var(--ink-soft);line-height:1.45}
+  @media (max-width:600px){.terms{grid-template-columns:1fr}.agent{grid-template-columns:1fr}.agent .nm{border-right:none;border-bottom:1px solid var(--panel-line)}h1{font-size:28px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <p class="kicker">Field Guide - One-page mental model</p>
+    <h1>AI Augmentation in Data Quality</h1>
+    <p class="sub">How AI turns the data-quality spreadsheet graveyard into a self-improving loop - and the vocabulary to talk about it.</p>
+  </header>
+
+  <div class="lead">
+    <p><span class="big">The one big idea</span>
+    Today, data-quality issues pile up in a spreadsheet until they become permanent <em>scars</em> in the data. AI augmentation replaces that with a closed loop: cheap detection fires alerts, an <strong>AI brain triages and diagnoses</strong> them, fixes are applied (auto for safe ones, human-approved for risky ones), and <strong>every outcome is logged and feeds back</strong> so the system gets smarter.</p>
+  </div>
+
+  <section id="s1">
+    <div class="secnum">01</div>
+    <h2>The loop, end to end</h2>
+    <p>The trick is <strong>division of labour</strong>: detection is fast but dumb, the AI does the thinking, humans guard the risky moves, and the feedback turns yesterday's fixes into tomorrow's intelligence.</p>
+    <div class="diagram"><div class="mmd-render"></div>
+<script type="text/x-mermaid">
+flowchart LR
+    A["DETECT<br/>rules + ML drift<br/>(dumb &amp; fast)"] --> B["TRIAGE<br/>AI brain<br/>(the thinking)"]
+    B --> C["REMEDIATE<br/>auto-fix safe<br/>human-approve risky"]
+    C --> D["TRACK<br/>case + audit log<br/>(no more spreadsheet)"]
+    D --> E["LEARN<br/>outcomes tune<br/>models &amp; prompts"]
+    E -. "smarter next time" .-> A
+</script>
+    </div>
+    <p class="figcap">Fig 1 - Detect &rarr; Triage &rarr; Remediate &rarr; Track &rarr; Learn.</p>
+  </section>
+
+  <section id="s2">
+    <div class="secnum">02</div>
+    <h2>The orchestrator: how the AI brain is wired</h2>
+    <p>Triage is <strong>not one giant AI call</strong>. It's an <strong>orchestrator</strong> - plain, deterministic code - that calls several small, specialised agents in the right order. The order is set by what depends on what.</p>
+    <div class="diagram"><div class="mmd-render"></div>
+<script type="text/x-mermaid">
+flowchart TB
+    EV["Issue event"] --> DD{"Dedup gate<br/>seen this before?"}
+    DD -- "yes" --> STOP["Attach to open case<br/>STOP (save 5 calls)"]
+    DD -- "no" --> PAR["Run in PARALLEL<br/>(independent)"]
+    PAR --> C1["Classifier"]
+    PAR --> C2["Root-Cause"]
+    PAR --> C3["Severity"]
+    C2 --> PLAN["Remediation Planner<br/>CHAINED: needs cause + severity"]
+    C3 --> PLAN
+    C1 --> AGG["Orchestrator aggregates"]
+    PLAN --> AGG
+    AGG --> RT{"Route"}
+    RT -- "safe + confident" --> AUTO["Auto-fix"]
+    RT -- "risky / unsure / P1" --> HUM["Human approves"]
+</script>
+    </div>
+    <p class="figcap">Fig 2 - Gate first, parallel where independent, chain where dependent, then decide.</p>
+    <ul class="keypts">
+      <li><strong>Dedup is a gate</strong> - run it first, alone. If it's a repeat, stop before spending money on five more AI calls.</li>
+      <li><strong>Independent agents run in parallel</strong> - classifier, root-cause and severity don't need each other, so do them at once.</li>
+      <li><strong>Dependent work is chained</strong> - the planner needs the cause and severity first, so it waits.</li>
+      <li><strong>Only the orchestrator sees everything</strong> - so it makes the final auto-vs-human call by combining all the flags.</li>
+    </ul>
+  </section>
+
+  <section id="s3">
+    <div class="secnum">03</div>
+    <h2>What each agent does</h2>
+    <div class="agents">
+      <div class="agent"><div class="nm">Orchestrator</div><div class="ds">The conductor. Plain code, <b>not</b> an AI. Sequences the agents, runs them in parallel or in order, and makes the final routing decision.</div></div>
+      <div class="agent"><div class="nm">Dedup<span class="pill">gate</span></div><div class="ds">"Have we seen this already?" Vector-matches the new issue against open cases so the same problem isn't triaged a hundred times.</div></div>
+      <div class="agent"><div class="nm">Classifier</div><div class="ds">Labels the issue type (drift, nulls spike, duplicate records, schema break...) so it can be routed and tracked consistently.</div></div>
+      <div class="agent"><div class="nm">Root-Cause</div><div class="ds">The detective. Uses lineage + recent-changes to find <b>why</b> it broke, returns ranked hypotheses with evidence and a confidence score.</div></div>
+      <div class="agent"><div class="nm">Severity</div><div class="ds">Scores blast radius - how many reports / dashboards / models are downstream - to set priority P1-P4.</div></div>
+      <div class="agent"><div class="nm">Remediation<br/>Planner</div><div class="ds">Picks the fix (a playbook: backfill, merge dupes, standardise format) and rates its risk. Drafts it for auto-apply or human approval.</div></div>
+    </div>
+  </section>
+
+  <section id="s3b">
+    <div class="secnum">03b</div>
+    <h2>What each agent depends on - and which MCP it needs</h2>
+    <p>An agent's <strong>factors</strong> are what it reasons about; its <strong>MCP servers</strong> are where it fetches those factors from. The three diagnostic agents split the work cleanly:</p>
+
+    <div class="depcard">
+      <div class="dh"><span class="dn">Classifier</span><span class="dt">"What kind of issue is this?"</span></div>
+      <p class="df"><b>Factors:</b> the signal type from detection (drift vs. null-spike vs. duplicates vs. schema break) &middot; the column's data type and semantic tag (currency? PII? timestamp?) &middot; which rule or model fired.</p>
+      <p class="dm"><b>MCP:</b> <code>catalog-mcp</code> (column type + tags) &middot; <code>metrics-mcp</code> (the actual shape of the bad data). <em>Usually no lineage - naming the issue doesn't need to know what's upstream.</em></p>
+    </div>
+
+    <div class="depcard">
+      <div class="dh"><span class="dn">Root-Cause</span><span class="dt">"Why did it break?" - looks UPSTREAM</span></div>
+      <p class="df"><b>Factors:</b> upstream dependencies &middot; recent changes (deploys, schema edits, pipeline failures) &middot; the timing correlation between a change and when the data went bad.</p>
+      <p class="dm"><b>MCP:</b> <code>lineage-mcp</code> (upstream) &middot; <code>changelog-mcp</code> (recent changes) &middot; <code>metrics-mcp</code> (exactly when the drift started, to line up against change timestamps).</p>
+    </div>
+
+    <div class="depcard">
+      <div class="dh"><span class="dn">Severity</span><span class="dt">"How much does it matter?" - looks DOWNSTREAM</span></div>
+      <p class="df"><b>Factors:</b> blast radius (how many reports, dashboards, ML features sit downstream) &middot; business-criticality of those consumers (a regulatory report beats an internal dashboard) &middot; data sensitivity (PII / financial raises the stakes) &middot; freshness / SLA pressure.</p>
+      <p class="dm"><b>MCP:</b> <code>lineage-mcp</code> (downstream blast radius) &middot; <code>catalog-mcp</code> (criticality + sensitivity tags on those consumers) &middot; <code>ticketing-mcp</code> (any SLA or incident already tied to them).</p>
+    </div>
+
+    <div class="diagram"><div class="mmd-render"></div>
+<script type="text/x-mermaid">
+flowchart LR
+    UP["Upstream sources<br/>(fx_rates, orders...)"] --> ASSET["The broken asset<br/>sales.transactions"]
+    ASSET --> DOWN["Downstream consumers<br/>(reports, dashboards, ML)"]
+    RCA["Root-Cause<br/>reads UPSTREAM<br/>= explains the past"] -.-> UP
+    SEV["Severity<br/>reads DOWNSTREAM<br/>= predicts the impact"] -.-> DOWN
+    CLS["Classifier<br/>reads the ASSET itself<br/>= names the problem"] -.-> ASSET
+</script>
+    </div>
+    <p class="figcap">Fig 4 - Same lineage graph, opposite directions. Root-cause looks back; severity looks forward.</p>
+    <p><strong>The line to remember:</strong> <em>Root-cause looks upstream to explain the past; severity looks downstream to predict the impact; the classifier just reads the asset itself. And the <b>catalog</b> is the shared backbone - it supplies the tags that make all three meaningful.</em></p>
+  </section>
+
+  <section id="s4">
+    <div class="secnum">04</div>
+    <h2>Inside one agent (and why Pydantic matters)</h2>
+    <p>Each agent is the same recipe: a <strong>role prompt</strong>, a few <strong>tools</strong> it can call, a <strong>strict output shape</strong>, and <strong>guardrails</strong>. It returns clean JSON the next step can trust - never free-form chat.</p>
+    <div class="diagram"><div class="mmd-render"></div>
+<script type="text/x-mermaid">
+flowchart LR
+    P["Role prompt<br/>+ rules"] --> AI(("AI call"))
+    T["Tools via MCP<br/>(live context)"] --> AI
+    AI --> S["Structured Output<br/>JSON guaranteed<br/>to match shape"]
+    S --> V["Pydantic check<br/>validates MEANING"]
+    V --> G["Guardrail<br/>trust enough to act?"]
+</script>
+    </div>
+    <p class="figcap">Fig 3 - prompt + tools in; validated, trustworthy verdict out.</p>
+    <div class="terms">
+      <div class="term"><div class="t">MCP</div><div class="d">How an agent gets <b>live</b> data from your real systems (catalog, lineage, metrics) at the moment it runs - instead of stale facts baked into the prompt.</div></div>
+      <div class="term"><div class="t">Structured Outputs</div><div class="d">An API setting that <b>guarantees</b> the AI returns JSON matching your schema. Kills the "it replied with prose / a stray comma" problem.</div></div>
+      <div class="term"><div class="t">Pydantic</div><div class="d">A Python library that turns a class into a strict data template. It checks the <b>meaning</b> a schema can't - e.g. "high confidence must cite evidence."</div></div>
+      <div class="term"><div class="t">Guardrail &ne; validation</div><div class="d">Pydantic says "this verdict is well-formed." The guardrail asks a different question: "do we trust it <b>enough to act automatically?</b>"</div></div>
+    </div>
+    <p><strong>The one-liner to remember:</strong> <em>Structured Outputs guarantee the shape; Pydantic guarantees the sense; the guardrail decides the trust.</em> A verdict can be perfectly valid and still be sent to a human because confidence is too low.</p>
+  </section>
+
+  <section id="s5">
+    <div class="secnum">05</div>
+    <h2>Talk track</h2>
+    <p>Lines you can actually say out loud to explain this:</p>
+    <div class="talk">
+      <span class="lbl">If a friend asks "what is this?"</span>
+      <ul>
+        <li><b>"Detection is dumb and fast; the intelligence lives in triage."</b> Rules catch the known stuff; ML catches drift; the AI does the diagnosing.</li>
+        <li><b>"It's not one big AI - it's a team of small specialists with a coordinator."</b> Dedup, classify, root-cause, severity, plan a fix.</li>
+        <li><b>"Run independent things in parallel, chain the dependent ones."</b> The fix-planner has to wait for the cause and severity.</li>
+        <li><b>"AI proposes, humans approve the risky stuff."</b> Safe + confident fixes auto-apply; everything else is one-click human approval.</li>
+        <li><b>"Every fix is logged and feeds back."</b> Yesterday's resolved cases make tomorrow's triage faster - the opposite of a dead spreadsheet.</li>
+        <li><b>"Pydantic is the seatbelt on the AI's output."</b> Structured outputs guarantee the shape; Pydantic checks the meaning before anything acts on it.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="s6">
+    <div class="secnum">06</div>
+    <h2>If you build it - order of attack</h2>
+    <ul class="keypts">
+      <li><strong>Standardise the issue event</strong> + an event bus. A clean, consistent alert format is the foundation everything sits on.</li>
+      <li><strong>Wrap your catalog &amp; lineage as MCP tools.</strong> Highest leverage - the AI is only as good as the context it can reach.</li>
+      <li><strong>Ship orchestrator + root-cause + severity first.</strong> That's ~80% of the value.</li>
+      <li><strong>Replace the spreadsheet with a real case system immediately</strong> - even before any auto-fix exists.</li>
+      <li><strong>Add auto-fix last,</strong> gated hard behind the risk + confidence check.</li>
+    </ul>
+  </section>
+
+</div>
+
+<script>
+  (function(){
+    function renderAll(){
+      if (typeof mermaid === 'undefined'){
+        document.querySelectorAll('.mmd-render').forEach(function(t){
+          t.innerHTML='<div class="mmd-err">Mermaid failed to load. Reconnect and reload.</div>';});
+        return;
+      }
+      mermaid.initialize({startOnLoad:false,securityLevel:'loose',theme:'base',
+        flowchart:{htmlLabels:true,curve:'basis'},
+        themeVariables:{fontFamily:"'IBM Plex Sans', sans-serif",fontSize:'13px',
+          primaryColor:'#e4efee',primaryBorderColor:'#0e5e5e',primaryTextColor:'#16201f',
+          lineColor:'#5e8482',secondaryColor:'#fbf0e2',tertiaryColor:'#f6f8f7',
+          clusterBkg:'#f1f6f5',clusterBorder:'#bccecb',titleColor:'#0a3f3f'}});
+      document.querySelectorAll('script[type="text/x-mermaid"]').forEach(function(b,i){
+        var target=b.parentElement.querySelector('.mmd-render');
+        try{
+          mermaid.render('m'+i,b.textContent.trim()).then(function(r){target.innerHTML=r.svg;})
+          .catch(function(e){target.innerHTML='<div class="mmd-err">Diagram '+(i+1)+': '+(e&&e.message?e.message:e)+'</div>';});
+        }catch(e){target.innerHTML='<div class="mmd-err">Diagram '+(i+1)+': '+(e&&e.message?e.message:e)+'</div>';}
+      });
+    }
+    if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',renderAll);}else{renderAll();}
+  })();
+</script>
+</body>
+</html>
