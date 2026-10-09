@@ -1,0 +1,5 @@
+column_id,domain,schema_name,table_name,table_description,column_name,data_type,description,mapped_term_id,modified_at
+C001,Deposits,DEMO,ACCOUNT,Deposit account balances,ACCT_ID,VARCHAR2,Unique deposit account identifier,,2026-10-01T00:00:00Z
+C002,Deposits,DEMO,ACCOUNT,Deposit account balances,AVL_BAL,NUMBER,Funds available for withdrawal after holds,,2026-10-01T00:00:00Z
+C003,Deposits,DEMO,ACCOUNT,Deposit account balances,BAL_AMT,NUMBER,Balance amount; balance basis undocumented,,2026-10-01T00:00:00Z
+C004,Deposits,DEMO,ACCOUNT,Deposit account balances,OPEN_DT,DATE,Date the deposit account was opened,T003,2026-10-01T00:00:00Z

@@ -1,0 +1,44 @@
+[
+  {
+    "column_id": "C001",
+    "recommendation": "Match",
+    "term_id": "T001",
+    "proposed_term": "Deposit Account Identifier",
+    "proposed_definition": "Unique identifier assigned to a deposit account.",
+    "confidence": "High",
+    "reasoning": "Explicit column description supports the approved definition in the Deposits domain.",
+    "evidence": [
+      "Unique deposit account identifier"
+    ],
+    "alternatives": []
+  },
+  {
+    "column_id": "C002",
+    "recommendation": "Match",
+    "term_id": "T002",
+    "proposed_term": "Available Balance",
+    "proposed_definition": "Funds available for withdrawal from a deposit account after holds.",
+    "confidence": "High",
+    "reasoning": "Explicit column description supports the approved definition in the Deposits domain.",
+    "evidence": [
+      "Funds available for withdrawal after holds"
+    ],
+    "alternatives": []
+  },
+  {
+    "column_id": "C003",
+    "recommendation": "Review",
+    "term_id": "",
+    "proposed_term": "",
+    "proposed_definition": "",
+    "confidence": "Low",
+    "reasoning": "The balance basis is undocumented; a steward must clarify whether it is available or ledger balance.",
+    "evidence": [
+      "Balance amount; balance basis undocumented"
+    ],
+    "alternatives": [
+      "Available Balance (T002)",
+      "Ledger Balance (T004)"
+    ]
+  }
+]
