@@ -1,0 +1,5 @@
+term_id,name,definition,domain,status
+T001,Deposit Account Identifier,Unique identifier assigned to a deposit account.,Deposits,Approved
+T002,Available Balance,Funds available for withdrawal from a deposit account after holds.,Deposits,Approved
+T003,Account Opening Date,Date on which a deposit account was opened.,Deposits,Approved
+T004,Ledger Balance,Posted balance of a deposit account before pending transactions and holds.,Deposits,Approved
